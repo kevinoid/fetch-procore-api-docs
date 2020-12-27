@@ -6,6 +6,8 @@
 
 'use strict';
 
+const { Agent: HttpAgent } = require('http');
+const { Agent: HttpsAgent } = require('https');
 const { paramCase } = require('param-case');
 // TODO [engine:node@>=12.9]: Use global Promise.allSettled
 const allSettled = require('promise.allsettled');
@@ -69,22 +71,42 @@ async function fetchProcoreApiDocs(options) {
     baseUrl = baseUrl.slice(0, -1);
   }
 
-  const agent = options && options.agent;
+  // If the caller did not provide an agent, use one with keep-alive
+  // (scoped to this function call) to avoid reconnecting for each request.
+  let agent = options && options.agent;
+  let createdAgent;
+  if (!agent) {
+    const { protocol } = new URL(baseUrl);
+    const Agent = protocol === 'https' ? HttpsAgent
+      : protocol === 'http' ? HttpAgent
+        : undefined;
+    if (Agent) {
+      createdAgent = new Agent({ keepAlive: true });
+      agent = createdAgent;
+    }
+  }
+
   const fetchOptions = { agent };
 
-  const groupsResponse =
-    await fetchJson(`${baseUrl}/groups.json`, fetchOptions);
-  const allGroups = await groupsResponse.json();
+  try {
+    const groupsResponse =
+      await fetchJson(`${baseUrl}/groups.json`, fetchOptions);
+    const allGroups = await groupsResponse.json();
 
-  const groupFilter = (options && options.groupFilter) || defaultFilter;
-  const groups = allGroups.filter(groupFilter);
+    const groupFilter = (options && options.groupFilter) || defaultFilter;
+    const groups = allGroups.filter(groupFilter);
 
-  return allSettled(groups.map((group) => {
-    const filename = `${paramCase(group.name)}.json`;
-    const url = `${baseUrl}/${filename}`;
-    debug(`Downloading ${url}...`);
-    return downloadJson(url, filename, fetchOptions);
-  }));
+    return await allSettled(groups.map((group) => {
+      const filename = `${paramCase(group.name)}.json`;
+      const url = `${baseUrl}/${filename}`;
+      debug(`Downloading ${url}...`);
+      return downloadJson(url, filename, fetchOptions);
+    }));
+  } finally {
+    if (createdAgent) {
+      createdAgent.destroy();
+    }
+  }
 };
 
 /** Base URL for REST API documentation JSON. */
