@@ -1,18 +1,18 @@
 {
-  "name": "@kevinoid/project-template",
+  "name": "@kevinoid/fetch-procore-api-docs",
   "version": "0.0.1",
-  "description": "A Node.js/npm project template with codecov, coveralls, ESLint, conventional-changelog, nyc, JSDoc, and mocha.",
+  "description": "Downloads JSON data used to generate the Procore (REST or Vapid) API documentation.",
   "keywords": [
-    "project-template",
-    "template"
+    "procore",
+    "procore-api"
   ],
   "license": "MIT",
-  "homepage": "https://github.com/kevinoid/node-project-template",
-  "bugs": "https://github.com/kevinoid/node-project-template/issues",
+  "homepage": "https://github.com/kevinoid/fetch-procore-api-docs",
+  "bugs": "https://github.com/kevinoid/fetch-procore-api-docs/issues",
   "author": "Kevin Locke <kevin@kevinlocke.name>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kevinoid/node-project-template.git"
+    "url": "https://github.com/kevinoid/fetch-procore-api-docs.git"
   },
   "type": "commonjs",
   "files": [
@@ -26,7 +26,7 @@
     ".": "./index.js"
   },
   "bin": {
-    "project-template": "bin/cmd.js"
+    "fetch-procore-api-docs": "bin/fetch-procore-api-docs.js"
   },
   "//": "All scripts should run in POSIX sh and Windows cmd.exe",
   "scripts": {
@@ -41,7 +41,6 @@
     "postpublish": "git -C doc push && git push --follow-tags origin main gh-pages && echo Remember to update GitHub Releases from CHANGELOG.md",
     "postversion": "rimraf doc && git clone -b gh-pages -l -q . doc && npm run doc && git -C doc add . && git -C doc commit -n -m \"Docs for v$npm_package_version\"",
     "preversion": "npm run test-cov && nyc check-coverage --statements 95 && depcheck --ignore-dirs doc && david && git-branch-is main && hub-ci-status -vv --wait",
-    "start": "supervisor --quiet --no-restart-on exit --extensions js,json --ignore test --poll-interval 2000 server.js",
     "test": "npm run lint && npm run test-unit",
     "test-cov": "npm run lint && npm run test-unit-cov",
     "test-unit": "node --throw-deprecation --unhandled-rejections=strict node_modules/mocha/bin/mocha --parallel --recursive test",
@@ -52,6 +51,9 @@
     "version-deps": "npm install conventional-changelog-cli david depcheck git-branch-is hub-ci-status"
   },
   "dependencies": {
+    "node-fetch": "^2.6.1",
+    "param-case": "^3.0.4",
+    "promise.allsettled": "^1.0.2",
     "yargs": "^16.0.3"
   },
   "devDependencies": {

@@ -1,16 +1,26 @@
 /**
- * @copyright Copyright 2016 Kevin Locke <kevin@kevinlocke.name>
+ * @copyright Copyright 2016-2021 Kevin Locke <kevin@kevinlocke.name>
  * @license MIT
  */
 
 'use strict';
 
-const modulename = require('..');
+const assert = require('assert');
 
-describe('modulename', () => {
-  it('does something', (done) => {
-    // Assert something about modulename here
-    modulename.func();
-    done();
+const fetchProcoreApiDocs = require('..');
+
+describe('fetchProcoreApiDocs', () => {
+  it('rejects with TypeError if options is null', () => {
+    assert.rejects(
+      () => fetchProcoreApiDocs(null),
+      TypeError,
+    );
+  });
+
+  it('rejects with TypeError if options is not an object', () => {
+    assert.rejects(
+      () => fetchProcoreApiDocs(''),
+      TypeError,
+    );
   });
 });

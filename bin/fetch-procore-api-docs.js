@@ -10,8 +10,9 @@
 'use strict';
 
 const Yargs = require('yargs/yargs');
+
 const packageJson = require('../package.json');
-const modulename = require('..');
+const fetchProcoreApiDocs = require('..');
 
 /** Options for command entry points.
  *
@@ -36,7 +37,7 @@ const modulename = require('..');
  * @param {!CommandOptions} options Options.
  * @param {function(number)} callback Callback with exit code.
  */
-function modulenameCmd(args, options, callback) {
+function fetchProcoreApiDocsCmd(args, options, callback) {
   if (typeof callback !== 'function') {
     throw new TypeError('callback must be a function');
   }
@@ -79,7 +80,7 @@ function modulenameCmd(args, options, callback) {
       'strip-aliased': true,
       'strip-dashed': true,
     })
-    .usage('Usage: $0 [options] [args...]')
+    .usage('Usage: $0 [options] [JSON doc...]')
     .help()
     .alias('help', 'h')
     .alias('help', '?')
@@ -112,38 +113,42 @@ function modulenameCmd(args, options, callback) {
       return;
     }
 
-    if (argOpts._.length !== 1) {
-      options.stderr.write('Error: Exactly one argument is required.\n');
+    if (argOpts._.length !== 0) {
+      options.stderr.write(
+        'Error: Non-option arguments are not expected nor supported.\n',
+      );
       callback(1);
       return;
     }
 
-    // Parse arguments then call API function with parsed options
-    const cmdOpts = {
-      files: argOpts._,
-      verbosity: argOpts.verbose - argOpts.quiet,
-    };
     // eslint-disable-next-line promise/catch-or-return
-    modulename.func(cmdOpts)
-      .then(
-        () => 0,
-        (err) => {
-          options.stderr.write(`${err}\n`);
-          return 1;
-        },
-      )
+    fetchProcoreApiDocs()
+      .then((results) => {
+        let exitCode = 0;
+        for (const result of results) {
+          if (result.status !== 'fulfilled') {
+            exitCode = 1;
+            options.stderr.write(`${result.reason}\n`);
+          }
+        }
+        return exitCode;
+      })
+      .catch((err) => {
+        options.stderr.write(`Unhandled ${err.stack}\n`);
+        return 1;
+      })
       // Note: nextTick for unhandledException (like util.callbackify)
       .then((exitCode) => process.nextTick(callback, exitCode));
   });
 }
 
-modulenameCmd.default = modulenameCmd;
-module.exports = modulenameCmd;
+fetchProcoreApiDocsCmd.default = fetchProcoreApiDocsCmd;
+module.exports = fetchProcoreApiDocsCmd;
 
 if (require.main === module) {
   // This file was invoked directly.
   // Note:  Could pass process.exit as callback to force immediate exit.
-  modulenameCmd(process.argv, process, (exitCode) => {
+  fetchProcoreApiDocsCmd(process.argv, process, (exitCode) => {
     process.exitCode = exitCode;
   });
 }
