@@ -44,10 +44,13 @@ function defaultFilter(group) {
  * @typedef {{
  *   agent: module.http.Agent,
  *   baseUrl: string,
+ *   fileOptions: module:fs.WriteFileOptions,
  *   groupFilter: function(!object): boolean
  * }} FetchProcoreApiDocsOptions
  * @property {module:stream.Agent=} agent Agent for HTTP(S) requests.
  * @property {string=} baseUrl Base URL from which to download docs JSON.
+ * @property {module:fs.WriteFileOptions=} fileOptions Options for JSON file
+ * creation.
  * @property {function(!object): boolean=} groupFilter Filter applied to
  * group objects before downloading.
  */
@@ -100,7 +103,12 @@ async function fetchProcoreApiDocs(options) {
       const filename = `${paramCase(group.name)}.json`;
       const url = `${baseUrl}/${filename}`;
       debug(`Downloading ${url}...`);
-      return downloadJson(url, filename, fetchOptions);
+      return downloadJson(
+        url,
+        filename,
+        fetchOptions,
+        options && options.fileOptions,
+      );
     }));
   } finally {
     if (createdAgent) {
