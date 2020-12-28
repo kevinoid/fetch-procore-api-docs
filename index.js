@@ -9,6 +9,7 @@
 const { Agent: HttpAgent } = require('http');
 const { Agent: HttpsAgent } = require('https');
 const { paramCase } = require('param-case');
+const path = require('path');
 // TODO [engine:node@>=12.9]: Use global Promise.allSettled
 const allSettled = require('promise.allsettled');
 const { debuglog } = require('util');
@@ -43,11 +44,13 @@ function defaultFilter(group) {
  *
  * @typedef {{
  *   agent: module.http.Agent,
+ *   baseDir: string,
  *   baseUrl: string,
  *   fileOptions: module:fs.WriteFileOptions,
  *   groupFilter: function(!object): boolean
  * }} FetchProcoreApiDocsOptions
  * @property {module:stream.Agent=} agent Agent for HTTP(S) requests.
+ * @property {string=} baseDir Directory where download JSON files are saved.
  * @property {string=} baseUrl Base URL from which to download docs JSON.
  * @property {module:fs.WriteFileOptions=} fileOptions Options for JSON file
  * creation.
@@ -67,6 +70,12 @@ module.exports =
 async function fetchProcoreApiDocs(options) {
   if (options !== undefined && typeof options !== 'object') {
     throw new TypeError('options must be an object');
+  }
+
+  // Note: path.join() throws for undefined or null.
+  const baseDir = (options && options.baseDir) || '.';
+  if (typeof baseDir !== 'string') {
+    throw new TypeError('options.baseDir must be a string');
   }
 
   let baseUrl = (options && options.baseUrl) || restBaseUrl;
@@ -100,9 +109,9 @@ async function fetchProcoreApiDocs(options) {
     const groups = allGroups.filter(groupFilter);
 
     return await allSettled(groups.map((group) => {
-      const filename = `${paramCase(group.name)}.json`;
+      const filename = path.join(baseDir, `${paramCase(group.name)}.json`);
       const url = `${baseUrl}/${filename}`;
-      debug(`Downloading ${url}...`);
+      debug(`Downloading ${url} to ${filename}...`);
       return downloadJson(
         url,
         filename,

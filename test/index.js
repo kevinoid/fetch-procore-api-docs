@@ -23,4 +23,11 @@ describe('fetchProcoreApiDocs', () => {
       TypeError,
     );
   });
+
+  it('rejects with TypeError if options.baseDir is not a string', () => {
+    assert.rejects(
+      () => fetchProcoreApiDocs({ baseDir: true }),
+      TypeError,
+    );
+  });
 });
