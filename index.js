@@ -8,7 +8,6 @@
 
 const { Agent: HttpAgent } = require('http');
 const { Agent: HttpsAgent } = require('https');
-const { paramCase } = require('param-case');
 const path = require('path');
 // TODO [engine:node@>=12.9]: Use global Promise.allSettled
 const allSettled = require('promise.allsettled');
@@ -16,6 +15,7 @@ const { debuglog } = require('util');
 
 const downloadJson = require('./lib/download-json.js');
 const fetchJson = require('./lib/fetch-json.js');
+const groupNameToUrlPath = require('./lib/group-name-to-url-path.js');
 
 const debug = debuglog('fetch-procore-api-docs');
 
@@ -109,7 +109,8 @@ async function fetchProcoreApiDocs(options) {
     const groups = allGroups.filter(groupFilter);
 
     return await allSettled(groups.map((group) => {
-      const filename = path.join(baseDir, `${paramCase(group.name)}.json`);
+      const filename =
+        path.join(baseDir, `${groupNameToUrlPath(group.name)}.json`);
       const url = `${baseUrl}/${filename}`;
       debug(`Downloading ${url} to ${filename}...`);
       return downloadJson(
