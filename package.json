@@ -53,7 +53,7 @@
   "dependencies": {
     "node-fetch": "^2.6.1",
     "promise.allsettled": "^1.0.2",
-    "yargs": "^16.0.3"
+    "yargs": "^17.0.0"
   },
   "devDependencies": {
     "@kevinoid/eslint-config": "^16.0.0",
