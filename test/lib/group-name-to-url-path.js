@@ -3,11 +3,9 @@
  * @license MIT
  */
 
-'use strict';
+import { strictEqual, throws } from 'assert';
 
-const { strictEqual, throws } = require('assert');
-
-const groupNameToUrlPath = require('../../lib/group-name-to-url-path.js');
+import groupNameToUrlPath from '../../lib/group-name-to-url-path.js';
 
 describe('groupNameToUrlPath', () => {
   it('throws TypeError for undefined', () => {

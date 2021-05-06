@@ -4,24 +4,25 @@
  * @module fetch-procore-api-docs
  */
 
-'use strict';
+import { Agent as HttpAgent } from 'http';
+import { Agent as HttpsAgent } from 'https';
+import path from 'path';
+import { debuglog } from 'util';
 
-const { Agent: HttpAgent } = require('http');
-const { Agent: HttpsAgent } = require('https');
-const path = require('path');
-// TODO [engine:node@>=12.9]: Use global Promise.allSettled
-const allSettled = require('promise.allsettled');
-const { debuglog } = require('util');
-
-const downloadJson = require('./lib/download-json.js');
-const fetchJson = require('./lib/fetch-json.js');
-const groupNameToUrlPath = require('./lib/group-name-to-url-path.js');
+import downloadJson from './lib/download-json.js';
+import fetchJson from './lib/fetch-json.js';
+import groupNameToUrlPath from './lib/group-name-to-url-path.js';
 
 const debug = debuglog('fetch-procore-api-docs');
 
-const restBaseUrl =
+/** Base URL for REST API documentation JSON. */
+// eslint-disable-next-line import/no-unused-modules
+export const restBaseUrl =
   'https://s3-us-west-2.amazonaws.com/procore-api-documentation-production/master/rest_docs/1';
-const vapidBaseUrl =
+
+/** Base URL for Vapid API documentation JSON. */
+// eslint-disable-next-line import/no-unused-modules
+export const vapidBaseUrl =
   'https://s3-us-west-2.amazonaws.com/procore-api-documentation-production/master';
 
 const supportLevels = [
@@ -43,7 +44,7 @@ function defaultFilter(group) {
 /** Options for command entry points.
  *
  * @typedef {{
- *   agent: module.http.Agent,
+ *   agent: module:http.Agent,
  *   baseDir: string,
  *   baseUrl: string,
  *   fileOptions: module:fs.WriteFileOptions,
@@ -66,8 +67,7 @@ function defaultFilter(group) {
  * Promise for results (in the format of Promise.allSettled) fulfilled with
  * undefined or rejected with Error.
  */
-module.exports =
-async function fetchProcoreApiDocs(options) {
+export default async function fetchProcoreApiDocs(options) {
   if (options !== undefined && typeof options !== 'object') {
     throw new TypeError('options must be an object');
   }
@@ -108,7 +108,7 @@ async function fetchProcoreApiDocs(options) {
     const groupFilter = (options && options.groupFilter) || defaultFilter;
     const groups = allGroups.filter(groupFilter);
 
-    return await allSettled(groups.map((group) => {
+    return await Promise.allSettled(groups.map((group) => {
       const filename =
         path.join(baseDir, `${groupNameToUrlPath(group.name)}.json`);
       const url = `${baseUrl}/${filename}`;
@@ -125,10 +125,4 @@ async function fetchProcoreApiDocs(options) {
       createdAgent.destroy();
     }
   }
-};
-
-/** Base URL for REST API documentation JSON. */
-module.exports.restBaseUrl = restBaseUrl;
-
-/** Base URL for Vapid API documentation JSON. */
-module.exports.vapidBaseUrl = vapidBaseUrl;
+}

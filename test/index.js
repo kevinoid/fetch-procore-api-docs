@@ -3,11 +3,9 @@
  * @license MIT
  */
 
-'use strict';
+import assert from 'assert';
 
-const assert = require('assert');
-
-const fetchProcoreApiDocs = require('..');
+import fetchProcoreApiDocs from '../index.js';
 
 describe('fetchProcoreApiDocs', () => {
   it('rejects with TypeError if options is null', () => {
