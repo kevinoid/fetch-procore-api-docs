@@ -72,6 +72,7 @@ export default async function fetchProcoreApiDocsMain(args, options) {
     throw new TypeError('options.stderr must be a stream.Writable');
   }
 
+  let errVersion;
   const command = new Command()
     .exitOverride()
     .configureOutput({
@@ -90,11 +91,24 @@ export default async function fetchProcoreApiDocsMain(args, options) {
     .option('-v, --verbose', 'print more output', countOption)
     // TODO: Replace with .version(packageJson.version) loaded as JSON module
     // https://github.com/nodejs/node/issues/37141
-    .option('-V, --version', 'output the version number');
+    .option('-V, --version', 'output the version number')
+    // throw exception to stop option parsing early, as commander does
+    // (e.g. to avoid failing due to missing required arguments)
+    .on('option:version', () => {
+      errVersion = new Error('version');
+      throw errVersion;
+    });
 
   try {
     command.parse(args);
   } catch (errParse) {
+    if (errVersion) {
+      const packageJson =
+        await readJson(new URL('package.json', import.meta.url));
+      options.stdout.write(`${packageJson.version}\n`);
+      return 0;
+    }
+
     // Note: Error message already printed to stderr by Commander
     return errParse.exitCode !== undefined ? errParse.exitCode : 1;
   }
