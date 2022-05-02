@@ -5,13 +5,10 @@
  */
 
 import { Command } from 'commander';
-// TODO [engine:node@>=14]: Use readFile from 'fs/promises'
-import { promises as fsPromises } from 'fs';
+import { readFile } from 'fs/promises';
 
 import fetchProcoreApiDocs from './index.js';
 import { fetchProcoreApiDocsMockSymbol } from './lib/symbols.js';
-
-const { readFile } = fsPromises;
 
 /** Option parser to count the number of occurrences of the option.
  *
