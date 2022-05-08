@@ -80,6 +80,7 @@ export default async function fetchProcoreApiDocsMain(args, options) {
     })
     .allowExcessArguments(false)
     .description('Command description.')
+    .option('-o, --output <dir>', 'output directory', '.')
     .option('-q, --quiet', 'print less output', countOption)
     .option('-v, --verbose', 'print more output', countOption)
     // TODO [engine:node@>=17.5]: .version(packageJson.version) from JSON import
@@ -124,10 +125,11 @@ export default async function fetchProcoreApiDocsMain(args, options) {
   }
 
   const verbosity = (argOpts.verbose || 0) - (argOpts.quiet || 0);
+  const fetchOpts = { baseDir: argOpts.output };
   const fetchProcoreApiDocsOrMock =
     options[fetchProcoreApiDocsMockSymbol] || fetchProcoreApiDocs;
   try {
-    const results = await fetchProcoreApiDocsOrMock();
+    const results = await fetchProcoreApiDocsOrMock(fetchOpts);
     let exitCode = 0;
     for (const result of results) {
       if (result.status !== 'fulfilled') {

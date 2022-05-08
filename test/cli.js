@@ -128,10 +128,11 @@ describe('fetchProcoreApiDocs/cli.js', () => {
 Command description.
 
 Options:
-  -q, --quiet    print less output
-  -v, --verbose  print more output
-  -V, --version  output the version number
-  -h, --help     display help for command
+  -o, --output <dir>  output directory (default: ".")
+  -q, --quiet         print less output
+  -v, --verbose       print more output
+  -V, --version       output the version number
+  -h, --help          display help for command
 `,
       );
       assert.strictEqual(options.stderr.read(), null);
