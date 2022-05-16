@@ -73,19 +73,19 @@ export default async function fetchProcoreApiDocs(options) {
   }
 
   // Note: path.join() throws for undefined or null.
-  const baseDir = (options && options.baseDir) || '.';
+  const baseDir = options?.baseDir ?? '.';
   if (typeof baseDir !== 'string') {
     throw new TypeError('options.baseDir must be a string');
   }
 
-  let baseUrl = (options && options.baseUrl) || restBaseUrl;
+  let baseUrl = options?.baseUrl ?? defaultBaseUrl;
   if (baseUrl.endsWith('/')) {
     baseUrl = baseUrl.slice(0, -1);
   }
 
   // If the caller did not provide an agent, use one with keep-alive
   // (scoped to this function call) to avoid reconnecting for each request.
-  let agent = options && options.agent;
+  let agent = options?.agent;
   let createdAgent;
   if (!agent) {
     const { protocol } = new URL(baseUrl);
@@ -105,7 +105,7 @@ export default async function fetchProcoreApiDocs(options) {
       await fetchJson(`${baseUrl}/groups.json`, fetchOptions);
     const allGroups = await groupsResponse.json();
 
-    const groupFilter = (options && options.groupFilter) || defaultFilter;
+    const groupFilter = options?.groupFilter ?? defaultFilter;
     const groups = allGroups.filter(groupFilter);
 
     return await Promise.allSettled(groups.map((group) => {
@@ -117,7 +117,7 @@ export default async function fetchProcoreApiDocs(options) {
         url,
         filename,
         fetchOptions,
-        options && options.fileOptions,
+        options?.fileOptions,
       );
     }));
   } finally {
