@@ -6,8 +6,10 @@
 
 import { Command } from 'commander';
 import { readFile } from 'fs/promises';
+import path from 'path';
 
-import fetchProcoreApiDocs from './index.js';
+import fetchProcoreApiDocs, { defaultResourceGroupsUrl, makeLinkToPath }
+  from './index.js';
 import { fetchProcoreApiDocsMockSymbol } from './lib/symbols.js';
 
 /** Option parser to count the number of occurrences of the option.
@@ -24,6 +26,13 @@ function countOption(optarg, previous) {
 async function readJson(pathOrUrl, options) {
   const content = await readFile(pathOrUrl, { encoding: 'utf8', ...options });
   return JSON.parse(content);
+}
+
+function makeLinkToOutputPath(resourceGroupsUrl, outputPath) {
+  const linkToPath = makeLinkToPath(resourceGroupsUrl);
+  return function linkToOutputPath(link) {
+    return path.join(outputPath, linkToPath(link));
+  };
 }
 
 /** Options for command entry points.
@@ -124,12 +133,14 @@ export default async function fetchProcoreApiDocsMain(args, options) {
     return 0;
   }
 
+  const linkToPath = !argOpts.output ? undefined
+    : makeLinkToOutputPath(defaultResourceGroupsUrl, argOpts.output);
+
   const verbosity = (argOpts.verbose || 0) - (argOpts.quiet || 0);
-  const fetchOpts = { baseDir: argOpts.output };
   const fetchProcoreApiDocsOrMock =
     options[fetchProcoreApiDocsMockSymbol] || fetchProcoreApiDocs;
   try {
-    const results = await fetchProcoreApiDocsOrMock(fetchOpts);
+    const results = await fetchProcoreApiDocsOrMock({ linkToPath });
     let exitCode = 0;
     for (const result of results) {
       if (result.status !== 'fulfilled') {
