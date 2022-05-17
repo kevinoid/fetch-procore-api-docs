@@ -79,7 +79,7 @@ export default async function fetchProcoreApiDocsMain(args, options) {
       getErrHelpWidth: () => options.stderr.columns,
     })
     .allowExcessArguments(false)
-    .description('Command description.')
+    .description('Download Procore API documentation OpenAPI content.')
     .option('-o, --output <dir>', 'output directory', '.')
     .option('-q, --quiet', 'print less output', countOption)
     .option('-v, --verbose', 'print more output', countOption)

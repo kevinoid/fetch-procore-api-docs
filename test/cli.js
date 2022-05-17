@@ -125,7 +125,7 @@ describe('fetchProcoreApiDocs/cli.js', () => {
         options.stdout.read(),
         `Usage: fetchProcoreApiDocs [options]
 
-Command description.
+Download Procore API documentation OpenAPI content.
 
 Options:
   -o, --output <dir>  output directory (default: ".")
