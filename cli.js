@@ -5,8 +5,8 @@
  */
 
 import { Command } from 'commander';
-import { readFile } from 'fs/promises';
-import path from 'path';
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
 
 import fetchProcoreApiDocs, { defaultResourceGroupsUrl, makeLinkToPath }
   from './index.js';
