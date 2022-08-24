@@ -4,11 +4,11 @@
  * @module fetch-procore-api-docs
  */
 
-import { mkdir } from 'fs/promises';
-import { Agent as HttpAgent } from 'http';
-import { Agent as HttpsAgent } from 'https';
-import path from 'path';
-import { debuglog } from 'util';
+import { mkdir } from 'node:fs/promises';
+import { Agent as HttpAgent } from 'node:http';
+import { Agent as HttpsAgent } from 'node:https';
+import path from 'node:path';
+import { debuglog } from 'node:util';
 
 import downloadJson from './lib/download-json.js';
 import fetchJson from './lib/fetch-json.js';
