@@ -1,7 +1,7 @@
 Fetch Procore API Docs
 ======================
 
-[![Build Status](https://img.shields.io/github/workflow/status/kevinoid/fetch-procore-api-docs/Node.js%20CI/main.svg?style=flat&label=build)](https://github.com/kevinoid/fetch-procore-api-docs/actions?query=branch%3Amain)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/kevinoid/fetch-procore-api-docs/node.js.yml?branch=main&style=flat&label=build)](https://github.com/kevinoid/fetch-procore-api-docs/actions?query=branch%3Amain)
 [![Coverage](https://img.shields.io/codecov/c/github/kevinoid/fetch-procore-api-docs.svg?style=flat)](https://codecov.io/github/kevinoid/fetch-procore-api-docs?branch=main)
 [![Dependency Status](https://img.shields.io/david/kevinoid/fetch-procore-api-docs.svg?style=flat)](https://david-dm.org/kevinoid/fetch-procore-api-docs)
 [![Supported Node Version](https://img.shields.io/node/v/@kevinoid/fetch-procore-api-docs.svg?style=flat)](https://www.npmjs.com/package/@kevinoid/fetch-procore-api-docs)
