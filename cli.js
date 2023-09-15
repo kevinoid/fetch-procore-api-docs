@@ -4,9 +4,10 @@
  * @module fetch-procore-api-docs/cli.js
  */
 
-import { Command } from 'commander';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
+
+import { Command } from 'commander';
 
 import fetchProcoreApiDocs, { defaultResourceGroupsUrl, makeLinkToPath }
   from './index.js';
