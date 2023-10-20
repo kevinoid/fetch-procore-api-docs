@@ -27,7 +27,7 @@ export const defaultResourceGroupsUrl =
  */
 // eslint-disable-next-line import/no-unused-modules
 export function defaultGroupsToLinks(resourceGroups) {
-  return resourceGroups.map(({ links }) => links[links.length - 1]);
+  return resourceGroups.map(({ links }) => links.at(-1));
 }
 
 /** Makes a function to get the path at which to save a given link (i.e. URL)
