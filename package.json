@@ -12,7 +12,7 @@
   "author": "Kevin Locke <kevin@kevinlocke.name>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kevinoid/fetch-procore-api-docs.git"
+    "url": "git+https://github.com/kevinoid/fetch-procore-api-docs.git"
   },
   "type": "module",
   "files": [
