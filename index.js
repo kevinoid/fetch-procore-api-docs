@@ -34,7 +34,7 @@ export function defaultGroupsToLinks(resourceGroups) {
  * from the resource groups at a given URL.
  *
  * The returned function currently applies the following:
- * If the link is below {@code resourceGroupsUrl}, the relative path is used,
+ * If the link is below {@link resourceGroupsUrl}, the relative path is used,
  * otherwise the full URL path is used.  In either case, the query string is
  * stripped and a .json extension is added if no extension is present.
  *
