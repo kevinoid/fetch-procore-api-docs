@@ -113,7 +113,7 @@ describe('fetchProcoreApiDocs/cli.js', () => {
     assert.strictEqual(options.stdout.read(), null);
     assert.strictEqual(
       options.stderr.read(),
-      'error: too many arguments. Expected 0 arguments but got 1.\n',
+      'error: too many arguments. Expected 0 arguments but got 1: unexpected.\n',
     );
   });
 
