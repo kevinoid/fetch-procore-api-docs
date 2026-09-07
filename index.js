@@ -25,7 +25,6 @@ export const defaultResourceGroupsUrl =
  * links to download.
  * @returns {!Array<string>} The last entry of the links Array for each group.
  */
-// eslint-disable-next-line import/no-unused-modules
 export function defaultGroupsToLinks(resourceGroups) {
   return resourceGroups.map(({ links }) => links.at(-1));
 }
